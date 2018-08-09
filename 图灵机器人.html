@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <textarea name="" id="" cols="33" rows="15"></textarea>
+    <div class="line"></div>
+    <script src="./jquery-3.3.1.js"></script>
+    <script>
+        // 发送xhr请求步骤
+        // 1.创建xhr对象
+        var xhr=new XMLHttpRequest();
+        // 2.监听状态
+        xhr.onreadystatechange=function(){
+            // 当状态码为4的时候表示请求完成并且有返回的数据
+            if(xhr.readyState==4){
+                // 获取响应数据，包含响应数据和响应码
+                console.log(xhr.responseText)
+                var str='';
+                var data=JSON.parse(xhr.responseText);
+                switch(data.code){
+                    case 100000:str='<p>提问：'+$('textarea').val()+'</p><p>回答：'+data.text+'</p>';
+                    break;
+                    case 200000:str='<p>提问：'+$('textarea').val()+'</p><p>回答：'+data.text+'</p><a href="'+data.url+'">点击跳转</a>';
+                    break;
+                }
+                $('body').html($('body').html()+str)
+            }
+        }
+        $('textarea').keyup(function(e){
+            var value=$(this).val();
+            if(e.keyCode==13){
+                // 表示有内容
+                if(value.trim().length>0){
+                    // 3.创建一个请求
+                    xhr.open('get','http://www.tuling123.com/openapi/api?key=68be263aac794add9dd804fe4c92dd67&info='+value,true)
+
+                    xhr.send();
+                }
+            }
+        })
+    </script>
+</body>
+</html>
